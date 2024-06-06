@@ -178,16 +178,16 @@ For this derivation, we will use the Minimum Variance Unbiased Estimator (MVUE),
 
 \begin{equation}
     \begin{bmatrix}
-        \symbf{x} \
+        \symbf{x} \\
         \symbf{w}
     \end{bmatrix}
     \sim \mathcal{N} \left(
     \begin{bmatrix}
-        \symbf{\mu_x} \
+        \symbf{\mu_x} \\
         0
     \end{bmatrix},
     \begin{bmatrix}
-        \v{X} & 0 \
+        \v{X} & 0 \\
         0 & \v{W}
     \end{bmatrix}
     \right) 
@@ -198,16 +198,16 @@ Now let us find the joint distribution of the optical state ($\symbf{x}$) and th
 
 \begin{equation}
     \begin{bmatrix}
-        \symbf{x} \
+        \symbf{x} \\
         \symbf{y}
     \end{bmatrix}
     \sim \mathcal{N} \left(
     \begin{bmatrix}
-        \symbf{\mu_x} \
+        \symbf{\mu_x} \\
         \v{A}\symbf{\mu_x}
     \end{bmatrix},
     \begin{bmatrix}
-        \v{X} & \v{X}\v{A}^{\tr} \
+        \v{X} & \v{X}\v{A}^{\tr} \\
         \v{A}\v{X} & \v{A}\v{X}\v{A}^{\tr} + \v{W}
     \end{bmatrix}
     \right) 
