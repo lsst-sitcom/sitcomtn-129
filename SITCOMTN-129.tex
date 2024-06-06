@@ -75,30 +75,30 @@ To determine how to adjust the optical state, so that the wavefront error is min
 Given that we are able to set the degrees of freedom values, one may wonder why we need to estimate them from the wavefront sensing if we have control over them. Thermal variations, gravitational errors, and dome-seeing affect the optical aberrations of the telescope and, therefore, the optical state. The fact that we express the optical state on the basis of the degrees of freedom doesn't mean we are estimating the state of the degrees of freedom at the actuator-level, which we know exactly, but rather the optical state of the system which is due to the actuator-level motions and the optical aberration effects. 
 
 \subsection*{Preliminaires}
-The vector of wavefront measurements $\bm{y} \in \mathbb{R}^n$ and the optical state vector  $\bm{x} \in \mathbb{R}^m$ are related through the sensitivity matrix $\v{A} \in \mathbb{R}^{n \times m}$ as $\bm{y} = \v{A} \bm{x}$. 
+The vector of wavefront measurements $\symbf{y} \in \mathbb{R}^n$ and the optical state vector  $\symbf{x} \in \mathbb{R}^m$ are related through the sensitivity matrix $\v{A} \in \mathbb{R}^{n \times m}$ as $\symbf{y} = \v{A} \symbf{x}$. 
 
-We will consider the vector of wavefront measurements $\bm{y}$ to be a 19-dimensional vector with Zernike coefficients from $Z_4$ to $Z_{22}$. However, we could consider the $\bm{y}$ to be the 19-Zernike vector at different Gaussian quadrature points, in which case $\bm{y} \in \mathbb{R}^{p \times n}$ where $p$ are the number of quadrature points. If that were the case, then the sensitivity matrix would be $\v{A} \in \mathbb{R}^{p \times n \times m}$. We could unravel the vectors and end up with an equivalent description to the original one. Therefore, without loss of generality, we will keep the dimensions of $\bm{y}$ to be $n$ for this summary.
+We will consider the vector of wavefront measurements $\symbf{y}$ to be a 19-dimensional vector with Zernike coefficients from $Z_4$ to $Z_{22}$. However, we could consider the $\symbf{y}$ to be the 19-Zernike vector at different Gaussian quadrature points, in which case $\symbf{y} \in \mathbb{R}^{p \times n}$ where $p$ are the number of quadrature points. If that were the case, then the sensitivity matrix would be $\v{A} \in \mathbb{R}^{p \times n \times m}$. We could unravel the vectors and end up with an equivalent description to the original one. Therefore, without loss of generality, we will keep the dimensions of $\symbf{y}$ to be $n$ for this summary.
 
-The optical state vector  $\bm{x}$ is a 50-dimensional vetor corresponding to the $50$ degrees of freedom of our system, which include by order, the rigid-body motion hexapod degrees of freedom for M2 ($dz_{M2}$, $dx_{M2}$, $dy_{M2}$, $Rx_{M2}$, $Ry_{M2}$) and for the Camera hexapod ($dz_{Cam}$, $dx_{Cam}$, $dy_{Cam}$, $Rx_{Cam}$, $Ry_{Cam}$), the 20 bending modes of M1M3, and the 20 bending modes of M2. 
+The optical state vector  $\\symbf{x}$ is a 50-dimensional vetor corresponding to the $50$ degrees of freedom of our system, which include by order, the rigid-body motion hexapod degrees of freedom for M2 ($dz_{M2}$, $dx_{M2}$, $dy_{M2}$, $Rx_{M2}$, $Ry_{M2}$) and for the Camera hexapod ($dz_{Cam}$, $dx_{Cam}$, $dy_{Cam}$, $Rx_{Cam}$, $Ry_{Cam}$), the 20 bending modes of M1M3, and the 20 bending modes of M2. 
 
-We will denote the vector of corrections that we apply to the system as $\bm{u} \in \mathbb{R}^n$. These corrections are also on the basis of the degrees of freedom.
+We will denote the vector of corrections that we apply to the system as $\\symbf{u} \in \mathbb{R}^n$. These corrections are also on the basis of the degrees of freedom.
 
 Finally, we will assume the following description of the optical state at time-step $k + 1$ holds, 
 \begin{equation}\label{eq3}
-    \bm{x}_{k + 1} = \bm{x}_{k} + \bm{u} + \bm{\delta}_{k}
+    \\symbf{x}_{k + 1} = \\symbf{x}_{k} + \\symbf{u} + \\symbf{\delta}_{k}
 \end{equation}
-where $\bm{\delta}_{k}$ is the average deviation introduced between time-step due to uncontrolled effects.
+where $\\symbf{\delta}_{k}$ is the average deviation introduced between time-step due to uncontrolled effects.
 
 \subsection*{Optical state estimation}
 The simplest way to estimate the optical state from the wavefront error measurements --which corresponds to the way we currently do it in \texttt{ts\_ofc}-- is using the Moore-Penrose pseudoinverse ($\v{A}^{\plus}$), which is derived as follows,
 \begin{equation*}
-     \v{A}\bm{x} = \bm{y}
+     \v{A}\\symbf{x} = \\symbf{y}
 \end{equation*}
 \begin{equation*}
-     \v{A}^{\tr}\v{A}\bm{x} = \v{A}^{\tr}\bm{y}
+     \v{A}^{\tr}\v{A}\\symbf{x} = \v{A}^{\tr}\\symbf{y}
 \end{equation*}
 \begin{equation*}
-    \hat{\bm{x}} = (\v{A}^{\tr} \v{A})^{-1}\v{A}^{\tr}\bm{y} = \v{A}^{\plus}\bm{y}
+    \hat{\\symbf{x}} = (\v{A}^{\tr} \v{A})^{-1}\v{A}^{\tr}\\symbf{y} = \v{A}^{\plus}\\symbf{y}
 \end{equation*}
 
 Notably, the sensitivity matrix is a highly-degenerate matrix which has a set of singular vectors with very small singular values. In Figure \ref{fig1} we plot the singular values for the Sensitivity matrix calculated on 35 Gaussian Quadrature points in the corner wavefront sensors. 
@@ -112,78 +112,78 @@ Notably, the sensitivity matrix is a highly-degenerate matrix which has a set of
 
 The importance of the degeneracy on our optical feedback control comes into play at multiple levels. The first one is the pseudo-inverse. In fact, instead of doing this matrix multiplication above, the pseudo-inverse $\v{A}^{\plus}$ is computed \textit{de facto} using the Singular Value Decomposition (SVD) of $\v{A}$.
 \begin{equation}
-     \hat{\bm{x}} = \v{A}^{\plus}\bm{y} = \v{V} \v{\Sigma}^{-1} \v{U^{\tr}}\bm{y}
+     \hat{\\symbf{x}} = \v{A}^{\plus}\\symbf{y} = \v{V} \v{\Sigma}^{-1} \v{U^{\tr}}\\symbf{y}
 \end{equation}
-The singular vectors from the sensitivity matrix, therefore play a crucial role in our state estimate. Let us rewrite the state estimate based on the real optical state $\bm{x}$,
+The singular vectors from the sensitivity matrix, therefore play a crucial role in our state estimate. Let us rewrite the state estimate based on the real optical state $\\symbf{x}$,
 \begin{equation}
-     \hat{\bm{x}} = \v{A}^{\plus}\bm{y} = \v{A}^{\plus}\v{A}\bm{x} = \v{V}\v{\Sigma}^{-1} \v{U^{\tr}}\v{U} \v{\Sigma} \v{V^{\tr}}\bm{x} =  \v{V}\v{V^{\tr}}\bm{x}
+     \hat{\\symbf{x}} = \v{A}^{\plus}\\symbf{y} = \v{A}^{\plus}\v{A}\\symbf{x} = \v{V}\v{\Sigma}^{-1} \v{U^{\tr}}\v{U} \v{\Sigma} \v{V^{\tr}}\\symbf{x} =  \v{V}\v{V^{\tr}}\\symbf{x}
 \end{equation}
 
-Since $\v{A}$ is nearly-degenerate, it doesn't have full column rank, and therefore $\v{V}\v{V^{\tr}} \neq \mathbb{I}$. In this case, we can interpret the pseudo-inverse estimate $\hat{\bm{x}}$ as the orthogonal projection of $\bm{x}$ onto the row space of $\v{A}$. 
+Since $\v{A}$ is nearly-degenerate, it doesn't have full column rank, and therefore $\v{V}\v{V^{\tr}} \neq \mathbb{I}$. In this case, we can interpret the pseudo-inverse estimate $\hat{\\symbf{x}}$ as the orthogonal projection of $\\symbf{x}$ onto the row space of $\v{A}$. 
 
 
 \subsubsection*{Noisy measurements}
 Let us now depart from the ideal world of physics and delve into reality. In this case, the problem formulation can be rewritten introducing noise to our measurements as,
 \begin{equation}
-    \bm{y}_{noisy} = \v{A} \bm{x} + \bm{w}
+    \\symbf{y}_{noisy} = \v{A} \\symbf{x} + \\symbf{w}
 \end{equation}
 
 The first step is to study what the error of our previous pseudo-inverse estimate will look like, that is, what is our \textit{reconstruction} error. The noisy estimate, in this case, would be, 
 \begin{equation}
-    \hat{\bm{x}}_{noisy} = \v{A}^{\plus}\v{A}\bm{x} +\v{A}^{\plus}\bm{w} 
+    \hat{\\symbf{x}}_{noisy} = \v{A}^{\plus}\v{A}\\symbf{x} +\v{A}^{\plus}\\symbf{w} 
 \end{equation}
 
 So the reconstruction error would be, 
 \begin{equation}
-    \norm{\hat{\bm{x}}_{noisy} - \hat{\bm{x}}}_2^2 = \norm{\v{A}^{\plus}\bm{w} }_2^2 = \norm{\v{V}\v{\Sigma}^{-1}\v{U}^{\tr}\bm{w} }_2^2
+    \norm{\hat{\\symbf{x}}_{noisy} - \hat{\\symbf{x}}}_2^2 = \norm{\v{A}^{\plus}\\symbf{w} }_2^2 = \norm{\v{V}\v{\Sigma}^{-1}\v{U}^{\tr}\\symbf{w} }_2^2
 \end{equation}
 
-Where we used the SVD of $\v{A}$. Now, let us show that for any vector $\bm{z} \in \mathbb{R}^n$, 
+Where we used the SVD of $\v{A}$. Now, let us show that for any vector $\\symbf{z} \in \mathbb{R}^n$, 
 \begin{equation}
-    \norm{\v{V}\bm{z}}_2^2 = \bm{z}^{\tr}\v{V}^{\tr}\v{V}\bm{z} = \bm{z}^{\tr}\bm{z} =  \norm{\bm{z}}_2^2
+    \norm{\v{V}\\symbf{z}}_2^2 = \\symbf{z}^{\tr}\v{V}^{\tr}\v{V}\\symbf{z} = \\symbf{z}^{\tr}\\symbf{z} =  \norm{\\symbf{z}}_2^2
 \end{equation}
 where we used the fact that the right-singular vector matrix derived from SVD is such that, $\v{V}^{\tr}\v{V} = \mathbb{I}$
 
 Now our reconstruction error can be rewritten as, 
 \begin{equation}
-    \norm{\hat{\bm{x}}_{noisy} - \hat{\bm{x}}}_2^2 = \norm{\v{\Sigma}^{-1}\v{U}^{\tr}\bm{w} }_2^2
+    \norm{\hat{\\symbf{x}}_{noisy} - \hat{\\symbf{x}}}_2^2 = \norm{\v{\Sigma}^{-1}\v{U}^{\tr}\\symbf{w} }_2^2
 \end{equation}
 
-At this point, let us suppose for just a minute that the noise is normalized $\norm{\bm{w}}_2^2 = 1$. Since $\v{U}$ is orthogonal, we see that, 
+At this point, let us suppose for just a minute that the noise is normalized $\norm{\\symbf{w}}_2^2 = 1$. Since $\v{U}$ is orthogonal, we see that, 
 \begin{equation}
-    \norm{\v{U}^{\tr}\bm{w}}_2^2 \leq \norm{\bm{w}}^2_2
+    \norm{\v{U}^{\tr}\\symbf{w}}_2^2 \leq \norm{\\symbf{w}}^2_2
 \end{equation}
 
 To find the maximum reconstruction error, using the above we see that, 
 \begin{equation}
-    \max_{\bm{w} \in \mathbb{R}^m} \norm{\v{\Sigma}^{-1}\v{U}^{\tr}\bm{w} }_2^2 = \max_{\bm{w} \in \mathbb{R}^m} \norm{\v{\Sigma}^{-1}\bm{w} }_2^2
+    \max_{\\symbf{w} \in \mathbb{R}^m} \norm{\v{\Sigma}^{-1}\v{U}^{\tr}\\symbf{w} }_2^2 = \max_{\\symbf{w} \in \mathbb{R}^m} \norm{\v{\Sigma}^{-1}\\symbf{w} }_2^2
 \end{equation}
 
 Finally, we can see that the worst-case error, in this case, will have an entry equal to $1$ in the largest singular value of $\v{\Sigma}^{-1}$, and the rest will be zero. In this case, we have that,
 \begin{equation}
-    \max_{\bm{w} \in \mathbb{R}^m} \norm{\v{\Sigma}^{-1}\v{U}^{\tr}\bm{w} }_2^2 = \max_{\sigma_i} \sigma_i^{-2} = \frac{1}{\sigma_m^2}
+    \max_{\\symbf{w} \in \mathbb{R}^m} \norm{\v{\Sigma}^{-1}\v{U}^{\tr}\\symbf{w} }_2^2 = \max_{\sigma_i} \sigma_i^{-2} = \frac{1}{\sigma_m^2}
 \end{equation}
 where $\sigma_m^2$ corresponds to the smallest singular value. 
 
 If we now remove the assumption of having a normalized error, we can rewrite our reconstruction error as, 
 \begin{equation}
-    \norm{\hat{\bm{x}}_{noisy} - \hat{\bm{x}}}_2^2 = \norm{\v{\Sigma}^{-1}\v{U}^{\tr}\bm{w} }_2^2 \leq  \frac{1}{\sigma_m^2} \norm{\bm{w}}^2_2
+    \norm{\hat{\\symbf{x}}_{noisy} - \hat{\\symbf{x}}}_2^2 = \norm{\v{\Sigma}^{-1}\v{U}^{\tr}\\symbf{w} }_2^2 \leq  \frac{1}{\sigma_m^2} \norm{\\symbf{w}}^2_2
 \end{equation}
 
 If the smallest singular value is very small, then the reconstruction error can be very bad. We, therefore, need to truncate the SVD and remove those terms with small singular value. The python function \texttt{np.linalg.pinv} currently being used does that automatically given a tolerance \texttt{rcond} that sets the smallest singular value allowed.
 \subsubsection*{Noise covariance for state estimation}
 We now want to explore the possibility of using the knowledge of the noise covariance estimate that we can get from real data, to improve our estimate of the state. This differs from the previous noisy measurement section in that we use information from the real noise, apart from removing those degenerate modes that could impact the state estimate due to the noise. 
 
-For this derivation, we will use the Minimum Variance Unbiased Estimator (MVUE), which for our linear model and assuming Gaussian statistics corresponds to the conditional mean $\mathrm{E}[X | Y]$. To derive the expression of this conditional expectation, we will start from the joint distribution of the optical state ($\bm{x}$) and noise ($\bm{w}$). Let us denote the state covariance $Cov(\bm{x}, \bm{x})$ with  $\v{X}$ and the noise covariance $Cov(\bm{w}, \bm{w})$ with $\v{W}$.  
+For this derivation, we will use the Minimum Variance Unbiased Estimator (MVUE), which for our linear model and assuming Gaussian statistics corresponds to the conditional mean $\mathrm{E}[X | Y]$. To derive the expression of this conditional expectation, we will start from the joint distribution of the optical state ($\\symbf{x}$) and noise ($\\symbf{w}$). Let us denote the state covariance $Cov(\\symbf{x}, \\symbf{x})$ with  $\v{X}$ and the noise covariance $Cov(\\symbf{w}, \\symbf{w})$ with $\v{W}$.  
 
 \begin{equation}
     \begin{bmatrix}
-        \bm{x} \\
-        \bm{w}
+        \\symbf{x} \\
+        \\symbf{w}
     \end{bmatrix}
     \sim \mathcal{N} \left(
     \begin{bmatrix}
-        \bm{\mu_x} \\
+        \\symbf{\mu_x} \\
         0
     \end{bmatrix},
     \begin{bmatrix}
@@ -194,17 +194,17 @@ For this derivation, we will use the Minimum Variance Unbiased Estimator (MVUE),
 \end{equation}
 where we used the fact that the noise is independent of the state to determine the off-diagonal terms.
 
-Now let us find the joint distribution of the optical state ($\bm{x}$) and the wavefront measurement ($\bm{y}$). 
+Now let us find the joint distribution of the optical state ($\\symbf{x}$) and the wavefront measurement ($\\symbf{y}$). 
 
 \begin{equation}
     \begin{bmatrix}
-        \bm{x} \\
-        \bm{y}
+        \\symbf{x} \\
+        \\symbf{y}
     \end{bmatrix}
     \sim \mathcal{N} \left(
     \begin{bmatrix}
-        \bm{\mu_x} \\
-        \v{A}\bm{\mu_x}
+        \\symbf{\mu_x} \\
+        \v{A}\\symbf{\mu_x}
     \end{bmatrix},
     \begin{bmatrix}
         \v{X} & \v{X}\v{A}^{\tr} \\
@@ -213,41 +213,41 @@ Now let us find the joint distribution of the optical state ($\bm{x}$) and the w
     \right) 
 \end{equation}
 
-Let us work out explicitly how we derived the term $Cov(\bm{y}, \bm{y})$,
+Let us work out explicitly how we derived the term $Cov(\\symbf{y}, \\symbf{y})$,
 \begin{equation}\label{eq14}
 \begin{split}
-    Cov(\bm{y}, \bm{y}) & = Cov(\v{A}\bm{x} + \bm{w}, \v{A}\bm{x} + \bm{w}) \\ 
-    & = Cov(\v{A}\bm{x}, \v{A}\bm{x}) + Cov(\bm{w}, \bm{w}) + Cov(\bm{w}, \v{A}\bm{x}) + Cov(\v{A}\bm{x}, \bm{w}) \\ 
+    Cov(\\symbf{y}, \\symbf{y}) & = Cov(\v{A}\\symbf{x} + \\symbf{w}, \v{A}\\symbf{x} + \\symbf{w}) \\ 
+    & = Cov(\v{A}\\symbf{x}, \v{A}\\symbf{x}) + Cov(\\symbf{w}, \\symbf{w}) + Cov(\\symbf{w}, \v{A}\\symbf{x}) + Cov(\v{A}\\symbf{x}, \\symbf{w}) \\ 
     &= \v{A}\v{X}\v{A}^{\tr} + \v{W}
 \end{split}
 \end{equation}
-where we used the independence of the optical state and noise, and the standard covariance property of $Cov(\v{A}\bm{x}, \v{A}\bm{x}) = \v{A}\v{X}\v{A}^{\tr}$. The off-diagonal term can be obtained similarly. 
+where we used the independence of the optical state and noise, and the standard covariance property of $Cov(\v{A}\\symbf{x}, \v{A}\\symbf{x}) = \v{A}\v{X}\v{A}^{\tr}$. The off-diagonal term can be obtained similarly. 
 
 Now, the mean of the conditional distribution of two bivariate normal random variables can be shown to be, 
 \begin{equation}
-    E[\bm{x} | \bm{y}] = \bm{\mu_x} + \v{\Sigma_{xy} } \v{\Sigma_{yy}}^{-1} (\bm{y} - \bm{\mu_y})
+    E[\\symbf{x} | \\symbf{y}] = \\symbf{\mu_x} + \v{\Sigma_{xy} } \v{\Sigma_{yy}}^{-1} (\\symbf{y} - \\symbf{\mu_y})
 \end{equation}
 
-Now, we will assume that the mean of the optical state distribution is zero $\bm{\mu_x} = 0$. Then, substituting the covariance from Equation \ref{eq14}, we have, 
+Now, we will assume that the mean of the optical state distribution is zero $\\symbf{\mu_x} = 0$. Then, substituting the covariance from Equation \ref{eq14}, we have, 
 \begin{equation}
-    E[\bm{x} | \bm{y}] = \v{X}\v{A}^{\tr}(\v{A}^{\tr}\v{X}\v{A} + \v{W})^{-1} \bm{y}
+    E[\\symbf{x} | \\symbf{y}] = \v{X}\v{A}^{\tr}(\v{A}^{\tr}\v{X}\v{A} + \v{W})^{-1} \\symbf{y}
 \end{equation}
 
 Overall, our MVUE estimator when we introduce the term of noise is, 
 \begin{equation}
-    \hat{\bm{x}} = \v{X}\v{A}^{\tr}(\v{A}^{\tr}\v{X}\v{A} + \v{W})^{-1} \bm{y}
+    \hat{\\symbf{x}} = \v{X}\v{A}^{\tr}(\v{A}^{\tr}\v{X}\v{A} + \v{W})^{-1} \\symbf{y}
 \end{equation}
 
-We can check dimensions now, $\v{A}: (n, m)$, $\v{W}: (m, m)$, $\bm{y}: (n, 1)$, and $\v{X}: (n, n)$. Note that this estimate has been proposed but is not implemented at all in \texttt{ts\_ofc}.
+We can check dimensions now, $\v{A}: (n, m)$, $\v{W}: (m, m)$, $\\symbf{y}: (n, 1)$, and $\v{X}: (n, n)$. Note that this estimate has been proposed but is not implemented at all in \texttt{ts\_ofc}.
 
 
 
 \subsection*{Optimal integral controller (OIC)}
-We derive the corrections to be applied by minimizing a particular cost function $J$. In our case, optimizing image quality, i.e. minimizing the variance of FWHM is an obvious goal. Furthermore, we want to limit large actuator swings to avoid damage to the glass, as well as to ensure smooth transitions between iterations. This additional goal can be achieved by incorporating the variance of the actuator commands ($\bm{u}$) in the cost function with some weight $\rho$. The matrix $\v{H}$ defines the distribution of control authority among various actuator groups (rigid body and shape actuators) such that 1 $\mu m$ or 1 arcsec rigid body displacement corresponds to 1 N actuator force. 
+We derive the corrections to be applied by minimizing a particular cost function $J$. In our case, optimizing image quality, i.e. minimizing the variance of FWHM is an obvious goal. Furthermore, we want to limit large actuator swings to avoid damage to the glass, as well as to ensure smooth transitions between iterations. This additional goal can be achieved by incorporating the variance of the actuator commands ($\\symbf{u}$) in the cost function with some weight $\rho$. The matrix $\v{H}$ defines the distribution of control authority among various actuator groups (rigid body and shape actuators) such that 1 $\mu m$ or 1 arcsec rigid body displacement corresponds to 1 N actuator force. 
 
 The cost function that we minimize to derive the corrections are, 
 \begin{equation}
-    J = \bm{y}_{k+1}^{\tr}\v{Q}\bm{y}_{k+1} + \rho \bm{u}^{\tr}\v{H}\bm{u}
+    J = \\symbf{y}_{k+1}^{\tr}\v{Q}\\symbf{y}_{k+1} + \rho \\symbf{u}^{\tr}\v{H}\\symbf{u}
 \end{equation}
 note that this $J$ is not related to the $J$ introduced in the previous section, it is just a convention to denote a cost function. Here we introduce the subindex $k$ to denote the timestep. We will want to derive the corrections at timestep $k+1$ based on the previous state $k$.
 
@@ -274,37 +274,37 @@ where $\alpha$ is the alpha value of the normalized point source sensitivity (PS
 \subsubsection*{Derivation of corrections}
 Now, that we have set these definitions, we want to derive what is the best corrections to apply at timestep $k$. To derive them, we will minimize the cost function $J$, meaning that we want to minimize both the penalty term, which corresponds to penalizing large swings in our degrees of freedom, and the first term, which corresponds to minimizing the wavefront error.
 
-To minimize the cost function with respect to $\bm{u}$, we need to rewrite the cost function in terms of $x_k$, we will leverage our initial definition $\bm{y}_k = \v{A} \bm{x}_k$
+To minimize the cost function with respect to $\\symbf{u}$, we need to rewrite the cost function in terms of $x_k$, we will leverage our initial definition $\\symbf{y}_k = \v{A} \\symbf{x}_k$
 \begin{equation}
-     J = \bm{x}_{k+1}^{\tr}\v{A}^{\tr}\v{Q}\v{A}\bm{x}_{k+1} + \rho \bm{u}^{\tr}\v{H}\bm{u}
+     J = \\symbf{x}_{k+1}^{\tr}\v{A}^{\tr}\v{Q}\v{A}\\symbf{x}_{k+1} + \rho \\symbf{u}^{\tr}\v{H}\\symbf{u}
 \end{equation}
 
 Now recall the basic assumption of our system in equation \ref{eq3}. We will assume for now that there is no uncontrolled change between timesteps, so we will have, 
 \begin{equation}
-    \bm{x}_{k+1} = \bm{x}_k + \bm{u}
+    \\symbf{x}_{k+1} = \\symbf{x}_k + \\symbf{u}
 \end{equation}
 
 With this assumption, the cost function becomes, 
 \begin{equation}
-     J = (\bm{x}_{k} + \bm{u})^{\tr}\v{A}^{\tr}\v{Q}\v{A}(\bm{x}_{k} + \bm{u}) + \rho \bm{u}^{\tr}\v{H}\bm{u}
+     J = (\\symbf{x}_{k} + \\symbf{u})^{\tr}\v{A}^{\tr}\v{Q}\v{A}(\\symbf{x}_{k} + \\symbf{u}) + \rho \\symbf{u}^{\tr}\v{H}\\symbf{u}
 \end{equation}
 
-Now that we have the cost function written in terms of the corrections $\bm{u}$, let us derive the optimal set of corrections by minimizing it, 
+Now that we have the cost function written in terms of the corrections $\\symbf{u}$, let us derive the optimal set of corrections by minimizing it, 
 \begin{equation}
 \begin{split}
-    \frac{\partial J}{\partial \bm{u}} & = 2\rho \v{H} \bm{u} + 2 \v{A}^{\tr}\v{Q}\v{A} \bm{u} + 2\v{A}^{\tr}\v{Q}\v{A} \bm{x}_k \\
-    & = 2( \v{A}^{\tr}\v{Q}\v{A} + \rho \v{H})\bm{u} + 2 \v{A}^{\tr}\v{Q}\v{A} \bm{x}_k
+    \frac{\partial J}{\partial \\symbf{u}} & = 2\rho \v{H} \\symbf{u} + 2 \v{A}^{\tr}\v{Q}\v{A} \\symbf{u} + 2\v{A}^{\tr}\v{Q}\v{A} \\symbf{x}_k \\
+    & = 2( \v{A}^{\tr}\v{Q}\v{A} + \rho \v{H})\\symbf{u} + 2 \v{A}^{\tr}\v{Q}\v{A} \\symbf{x}_k
 \end{split}
 \end{equation}
 
 Equating the above to zero, we find that the corrections to be applied are, 
 \begin{equation}
-    \bm{u} = -(\v{A}^{\tr}\v{Q}\v{A} + \rho \v{H})^{-1}\v{A}^{\tr}\v{Q}\v{A}\bm{x}_k = -\v{F}\bm{x}_k
+    \\symbf{u} = -(\v{A}^{\tr}\v{Q}\v{A} + \rho \v{H})^{-1}\v{A}^{\tr}\v{Q}\v{A}\\symbf{x}_k = -\v{F}\\symbf{x}_k
 \end{equation}
 
 We normally introduce a gain term $\alpha$ that determines the speed of convergence. With that we can derive an expression for the state of our system at timestep $k+1$,
 \begin{equation}\label{eq4}
-    \bm{x}_{k + 1} = \bm{x}_{k} - \alpha\v{F}\bm{x}_k + \bm{\delta}_{k}
+    \\symbf{x}_{k + 1} = \\symbf{x}_{k} - \alpha\v{F}\\symbf{x}_k + \\symbf{\delta}_{k}
 \end{equation}
 
 \end{document}
